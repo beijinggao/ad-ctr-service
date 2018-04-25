@@ -18,9 +18,10 @@ type Feature struct {
 	VectorInfo       int // 是否是向量 0 不是 向量，其他的代表向量长度，严格非负
 	OrgId            int
 	OnehotVectorInfo int
+	Value            interface{}
 }
 
-func NewFeature(name string, ftype FeatureType, categoricalInfo int, vectorInfo int, orgId int, onehotVectorInfo int) *Feature {
+func NewFeature(name string, ftype FeatureType, categoricalInfo int, vectorInfo int, orgId int, onehotVectorInfo int, value interface{}) *Feature {
 	return &Feature{
 		Name:             name,
 		FType:            ftype,
@@ -28,6 +29,7 @@ func NewFeature(name string, ftype FeatureType, categoricalInfo int, vectorInfo 
 		VectorInfo:       vectorInfo,
 		OrgId:            orgId,
 		OnehotVectorInfo: onehotVectorInfo,
+		Value:            value,
 	}
 
 }

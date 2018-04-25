@@ -9,11 +9,6 @@ import (
 
 type XBooster struct {
 	ModelPath string
-	Booster   xgboost.BoosterHandle
-}
-
-func (self *XBooster) LoadModel() {
-	self.Booster.LoadModel(self.ModelPath)
 }
 
 func (self *XBooster) Predict() {
@@ -34,10 +29,14 @@ func (self *XBooster) Predict() {
 	var test xgboost.DMatrix
 	test = append(test, dataRow)
 	testHandle, err := xgboost.XGDMatrixCreateFromMat(test, -1)
+	// create the booster and load some parameters
+	booster, err := xgboost.XGBoosterCreate([]*xgboost.DMatrixHandle{testHandle})
+	booster.LoadModel(self.ModelPath)
+
 	if err != nil {
 		log.Fatalln(err)
 	}
-	result, err := self.Booster.Predict(testHandle, 0, 0)
+	result, err := booster.Predict(testHandle, 0, 0)
 	if err != nil {
 		log.Fatalln(err)
 	}

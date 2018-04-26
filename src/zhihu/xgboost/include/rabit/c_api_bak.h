@@ -8,17 +8,10 @@
 #define RABIT_C_API_H_
 
 #ifdef __cplusplus
-#define RABIT_EXTERN_C extern "C"
+extern "C" {
 #include <cstdio>
 #else
-#define RABIT_EXTERN_C //源代码中缺少此句使用时报错
 #include <stdio.h>
-#endif
-
-#if defined(_MSC_VER) || defined(_WIN32)
-#define RABIT_DLL RABIT_EXTERN_C __declspec(dllexport)
-#else
-#define RABIT_DLL RABIT_EXTERN_C
 #endif
 
 /*! \brief rabit unsigned long type */
@@ -33,22 +26,22 @@ typedef unsigned long rbt_ulong;  // NOLINT(*)
  * \param argc number of arguments in argv
  * \param argv the array of input arguments
  */
-RABIT_DLL void RabitInit(int argc, char *argv[]);
+void RabitInit(int argc, char *argv[]);
 
 /*!
  * \brief finalize the rabit engine,
  * call this function after you finished all jobs.
  */
-RABIT_DLL void RabitFinalize();
+void RabitFinalize();
 
 /*! \brief get rank of current process */
-RABIT_DLL int RabitGetRank();
+int RabitGetRank();
 
 /*! \brief get total number of process */
-RABIT_DLL int RabitGetWorldSize();
+int RabitGetWorldSize();
 
 /*! \brief get rank of current process */
-RABIT_DLL int RabitIsDistributed();
+int RabitIsDistributed();
 
 /*!
  * \brief print the msg to the tracker,
@@ -56,14 +49,14 @@ RABIT_DLL int RabitIsDistributed();
  *    the user who monitors the tracker
  * \param msg the message to be printed
  */
-RABIT_DLL void RabitTrackerPrint(const char *msg);
+void RabitTrackerPrint(const char *msg);
 /*!
  * \brief get name of processor
  * \param out_name hold output string
  * \param out_len hold length of output string
  * \param max_len maximum buffer length of input
    */
-RABIT_DLL void RabitGetProcessorName(char *out_name,
+void RabitGetProcessorName(char *out_name,
                                      rbt_ulong *out_len,
                                      rbt_ulong max_len);
 /*!
@@ -74,7 +67,7 @@ RABIT_DLL void RabitGetProcessorName(char *out_name,
  * \param size the size of the data
  * \param root the root of process
  */
-RABIT_DLL void RabitBroadcast(void *sendrecv_data,
+void RabitBroadcast(void *sendrecv_data,
                               rbt_ulong size, int root);
 /*!
  * \brief perform in-place allreduce, on sendrecvbuf
@@ -94,7 +87,7 @@ RABIT_DLL void RabitBroadcast(void *sendrecv_data,
  *                     If the result of Allreduce can be recovered directly, then prepare_func will NOT be called
    * \param prepare_arg argument used to passed into the lazy preprocessing function
    */
-RABIT_DLL void RabitAllreduce(void *sendrecvbuf,
+void RabitAllreduce(void *sendrecvbuf,
                               size_t count,
                               int enum_dtype,
                               int enum_op,
@@ -112,7 +105,7 @@ RABIT_DLL void RabitAllreduce(void *sendrecvbuf,
  *     if returned version == 0, this means no model has been CheckPointed
  *     nothing will be touched
  */
-RABIT_DLL int RabitLoadCheckPoint(char **out_global_model,
+int RabitLoadCheckPoint(char **out_global_model,
                                   rbt_ulong *out_global_len,
                                   char **out_local_model,
                                   rbt_ulong *out_local_len);
@@ -129,7 +122,7 @@ RABIT_DLL int RabitLoadCheckPoint(char **out_global_model,
  *       bring replication cost in CheckPoint function. global_model do not need explicit replication.
  *       So only CheckPoint with global_model if possible
  */
-RABIT_DLL void RabitCheckPoint(const char *global_model,
+void RabitCheckPoint(const char *global_model,
                                rbt_ulong global_len,
                                const char *local_model,
                                rbt_ulong local_len);
@@ -137,7 +130,7 @@ RABIT_DLL void RabitCheckPoint(const char *global_model,
  * \return version number of current stored model,
  * which means how many calls to CheckPoint we made so far
  */
-RABIT_DLL int RabitVersionNumber();
+int RabitVersionNumber();
 
 
 /*!
@@ -149,6 +142,9 @@ RABIT_DLL int RabitVersionNumber();
  * \endcode
  * \return a dummy integer.
  */
-RABIT_DLL int RabitLinkTag();
+int RabitLinkTag();
 
+#ifdef __cplusplus
+}
+#endif
 #endif  // RABIT_C_API_H_

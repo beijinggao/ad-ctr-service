@@ -4,7 +4,7 @@ import (
 	"reflect"
 )
 
-func NewFeatureList1() *FeatureList {
+func NewFeatureListNil() *FeatureList {
 	return &FeatureList{}
 }
 

@@ -33,14 +33,3 @@ func NewFeature(name string, ftype FeatureType, categoricalInfo int, vectorInfo 
 	}
 
 }
-
-/*type AdZoneId struct {
-	Feature
-}
-
-func NewAdZoneId() *AdZoneId {
-	feature := NewFeature("AdZoneId", OnehotValue, 16, 0, 0, 0)
-	return &AdZoneId{
-		Feature: *feature,
-	}
-}*/

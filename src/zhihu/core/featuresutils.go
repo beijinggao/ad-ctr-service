@@ -4,6 +4,13 @@ import (
 	"reflect"
 )
 
+func NewFeatureList1() *FeatureList {
+	return &FeatureList{}
+}
+
+func (f * FeatureList) SetAdZoneId(vec []float64) {
+}
+
 type FeatureList struct {
 	//1-30
 	AdZoneId Feature

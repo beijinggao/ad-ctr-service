@@ -353,6 +353,15 @@ func XGBoosterCreate(dmats []*DMatrixHandle) (*BoosterHandle, error) {
 	return &BoosterHandle{handlerPointer}, nil
 }
 
+func XGBoosterCreateNil() (*BoosterHandle, error) {
+	var handlerPointer C.BoosterHandle
+	ret := C.XGBoosterCreate(nil, 0, &handlerPointer)
+	if C.int(ret) == -1 {
+		return nil, errors.New("load XGBoosterCreate failed")
+	}
+	return &BoosterHandle{handlerPointer}, nil
+}
+
 func (this *BoosterHandle) Free() {
 	C.XGBoosterFree(this.ptr)
 }

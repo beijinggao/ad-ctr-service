@@ -36,3 +36,7 @@ func (self *XBooster) Predict(data xgboost.DMatrix) {
 	testHandle.Free()
 
 }
+
+func (self *XBooster) Free() {
+	self.BoosterHandler.Free()
+}

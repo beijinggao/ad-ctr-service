@@ -29,5 +29,6 @@ func main() {
 	inference = append(inference, dataRow)
 
 	booster.Predict(inference)
+	booster.Free()
 
 }

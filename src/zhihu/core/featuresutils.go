@@ -8,7 +8,166 @@ func NewFeatureListNil() *FeatureList {
 	return &FeatureList{}
 }
 
-func (f * FeatureList) SetAdZoneId(vec []float64) {
+// SetAdZoneId
+func (self *FeatureList) SetAdZoneId(value interface{}) {
+	adZoneId := NewFeature("AdZoneId", OnehotValue, 30, 0, 0, 0, value)
+	self.AdZoneId = *adZoneId
+}
+func (self *FeatureList) SetCTR(value interface{}) {
+	ctr := NewFeature("CTR", ContinueValue, 0, 0, 0, 0, value)
+	self.CTR = *ctr
+}
+func (self *FeatureList) SetHasTarget(value interface{}) {
+	hasTarget := NewFeature("HasTarget", ContinueValue, 0, 0, 0, 0, value)
+	self.HasTarget = *hasTarget
+}
+func (self *FeatureList) SetTerminalFeature(value interface{}) {
+	terminalFeature := NewFeature("TerminalFeature", OnehotValue, 5, 0, 0, 0, value)
+	self.TerminalFeature = *terminalFeature
+}
+func (self *FeatureList) SetAvgTopicInterestScore(value interface{}) {
+	avgTopicInterestScore := NewFeature("AvgTopicInterestScore", ContinueValue, 0, 0, 0, 0, value)
+	self.AvgTopicInterestScore = *avgTopicInterestScore
+}
+func (self *FeatureList) SetMaxTopicInterestScore(value interface{}) {
+	maxTopicInterestScore := NewFeature("MaxTopicInterestScore", ContinueValue, 0, 0, 0, 0, value)
+	self.MaxTopicInterestScore = *maxTopicInterestScore
+}
+func (self *FeatureList) SetShowNumFeature(value interface{}) {
+	showNumFeature := NewFeature("ShowNumFeature", ContinueValue, 0, 0, 0, 0, value)
+	self.ShowNumFeature = *showNumFeature
+}
+func (self *FeatureList) SetDisplayHours(value interface{}) {
+	displayHours := NewFeature("DisplayHours", OnehotValue, 24, 0, 0, 0, value)
+	self.DisplayHours = *displayHours
+}
+func (self *FeatureList) SetClickFeature(value interface{}) {
+	clickFeature := NewFeature("ClickFeature", ContinueValue, 0, 0, 0, 0, value)
+	self.ClickFeature = *clickFeature
+}
+func (self *FeatureList) SetDayUserCrShow(value interface{}) {
+	dayUserCrShow := NewFeature("DayUserCrShow", ContinueValue, 0, 0, 0, 0, value)
+	self.DayUserCrShow = *dayUserCrShow
+}
+func (self *FeatureList) SetDayUserCrClick(value interface{}) {
+	dayUserCrClick := NewFeature("DayUserCrClick", ContinueValue, 0, 0, 0, 0, value)
+	self.DayUserCrClick = *dayUserCrClick
+}
+func (self *FeatureList) SetDayUserShow(value interface{}) {
+	dayUserShow := NewFeature("DayUserShow", ContinueValue, 0, 0, 0, 0, value)
+	self.DayUserShow = *dayUserShow
+}
+func (self *FeatureList) SetDayUserClick(value interface{}) {
+	dayUserClick := NewFeature("DayUserClick", ContinueValue, 0, 0, 0, 0, value)
+	self.DayUserClick = *dayUserClick
+}
+func (self *FeatureList) SetDayUserAdShow(value interface{}) {
+	dayUserAdShow := NewFeature("DayUserAdShow", ContinueValue, 0, 0, 0, 0, value)
+	self.DayUserAdShow = *dayUserAdShow
+}
+func (self *FeatureList) SetDayUserAdClick(value interface{}) {
+	dayUserAdClick := NewFeature("DayUserAdClick", ContinueValue, 0, 0, 0, 0, value)
+	self.DayUserAdClick = *dayUserAdClick
+}
+func (self *FeatureList) SetUserInterests(value interface{}) {
+	userInterests := NewFeature("UserInterests", OnehotValue, 19, 0, 0, 0, value)
+	self.UserInterests = *userInterests
+}
+func (self *FeatureList) SetIndustry(value interface{}) {
+	industry := NewFeature("Industry", OnehotValue, 19, 0, 0, 0, value)
+	self.Industry = *industry
+}
+func (self *FeatureList) SetUserIndustrySim(value interface{}) {
+	userIndustrySim := NewFeature("UserIndustrySim", ContinueValue, 0, 0, 0, 0, value)
+	self.UserIndustrySim = *userIndustrySim
+}
+func (self *FeatureList) SetAnsIndustry(value interface{}) {
+	ansIndustry := NewFeature("AnsIndustry", OnehotValue, 19, 0, 0, 0, value)
+	self.UserIndustrySim = *ansIndustry
+}
+func (self *FeatureList) SetUserAdidSim(value interface{}) {
+	userAdidSim := NewFeature("UserAdidSim", ContinueValue, 0, 0, 0, 0, value)
+	self.UserAdidSim = *userAdidSim
+}
+func (self *FeatureList) SetAnsAdid(value interface{}) {
+	ansAdid := NewFeature("AnsAdid", ContinueValue, 0, 0, 0, 0, value)
+	self.AnsAdid = *ansAdid
+}
+func (self *FeatureList) SetClickIndustry(value interface{}) {
+	clickIndustry := NewFeature("ClickIndustry", ContinueValue, 0, 0, 0, 0, value)
+	self.ClickIndustry = *clickIndustry
+}
+func (self *FeatureList) SetDisplayWeeks(value interface{}) {
+	displayWeeks := NewFeature("DisplayWeeks", OnehotValue, 8, 0, 0, 0, value)
+	self.DisplayWeeks = *displayWeeks
+}
+func (self *FeatureList) SetTemplateFeature(value interface{}) {
+	templateFeature := NewFeature("TemplateFeature", OnehotValue, 100, 0, 0, 0, value)
+	self.TemplateFeature = *templateFeature
+}
+func (self *FeatureList) SetSimsMultiple(value interface{}) {
+	simsMultiple := NewFeature("SimsMultiple", VectorValue, 0, 8, 0, 0, value)
+	self.SimsMultiple = *simsMultiple
+}
+func (self *FeatureList) SetRecallSim(value interface{}) {
+	recallSim := NewFeature("RecallSim", ContinueValue, 0, 0, 0, 0, value)
+	self.RecallSim = *recallSim
+}
+func (self *FeatureList) SetSimIsEmpty(value interface{}) {
+	simIsEmpty := NewFeature("SimIsEmpty", VectorValue, 0, 3, 0, 0, value)
+	self.SimIsEmpty = *simIsEmpty
+}
+func (self *FeatureList) SetClusterCtr(value interface{}) {
+	clusterCtr := NewFeature("ClusterCtr", ContinueValue, 0, 0, 0, 0, value)
+	self.ClusterCtr = *clusterCtr
+}
+func (self *FeatureList) SetUserVectorByAls(value interface{}) {
+	userVectorByAls := NewFeature("UserVectorByAls", VectorValue, 0, 16, 0, 0, value)
+	self.UserVectorByAls = *userVectorByAls
+}
+func (self *FeatureList) SetUserVectorIsEmpty(value interface{}) {
+	userVectorIsEmpty := NewFeature("UserVectorIsEmpty", ContinueValue, 0, 0, 0, 0, value)
+	self.UserVectorIsEmpty = *userVectorIsEmpty
+}
+func (self *FeatureList) SetCreativeBrandSim(value interface{}) {
+	creativeBrandSim := NewFeature("CreativeBrandSim", VectorValue, 0, 3, 0, 0, value)
+	self.CreativeBrandSim = *creativeBrandSim
+}
+func (self *FeatureList) SetNegativeKeyWordSim(value interface{}) {
+	negativeKeyWordSim := NewFeature("NegativeKeyWordSim", ContinueValue, 0, 0, 0, 0, value)
+	self.NegativeKeyWordSim = *negativeKeyWordSim
+}
+func (self *FeatureList) SetPostiveKeyWordSim(value interface{}) {
+	postiveKeyWordSim := NewFeature("PostiveKeyWordSim", ContinueValue, 0, 0, 0, 0, value)
+	self.PostiveKeyWordSim = *postiveKeyWordSim
+}
+func (self *FeatureList) SetNegativeUserAdTopicSim(value interface{}) {
+	negativeUserAdTopicSim := NewFeature("NegativeUserAdTopicSim", ContinueValue, 0, 0, 0, 0, value)
+	self.NegativeUserAdTopicSim = *negativeUserAdTopicSim
+}
+func (self *FeatureList) SetPostiveUserAdTopicSim(value interface{}) {
+	postiveUserAdTopicSim := NewFeature("PostiveUserAdTopicSim", ContinueValue, 0, 0, 0, 0, value)
+	self.PostiveUserAdTopicSim = *postiveUserAdTopicSim
+}
+func (self *FeatureList) SetBrushnum(value interface{}) {
+	brushnum := NewFeature("Brushnum", ContinueValue, 0, 0, 0, 0, value)
+	self.Brushnum = *brushnum
+}
+func (self *FeatureList) SetCtrPro(value interface{}) {
+	ctrPro := NewFeature("CtrPro", VectorValue, 0, 4, 0, 0, value)
+	self.CtrPro = *ctrPro
+}
+func (self *FeatureList) SetViewClickNum(value interface{}) {
+	viewClickNum := NewFeature("ViewClickNum", VectorValue, 0, 4, 0, 0, value)
+	self.ViewClickNum = *viewClickNum
+}
+func (self *FeatureList) SetPageHomeType(value interface{}) {
+	pageHomeType := NewFeature("PageHomeType", OnehotValue, 8, 0, 0, 0, value)
+	self.PageHomeType = *pageHomeType
+}
+func (self *FeatureList) SetUserAdTagOneHotVector(value interface{}) {
+	userAdTagOneHotVector := NewFeature("UserAdTagOneHotVector", OnehotVectorValue, 0, 0, 0, 69, value)
+	self.UserAdTagOneHotVector = *userAdTagOneHotVector
 }
 
 type FeatureList struct {
@@ -182,7 +341,7 @@ func NewFeatureList() *FeatureList {
 	return featureList
 }
 
-func (self *FeatureList) Transform2MapFeature(featureList *FeatureList) map[int]float32 {
+func (self *FeatureList) Transform2MapFeature() map[int]float32 {
 	sparseFeature := make(map[int]float32)
 	t := reflect.TypeOf(*self)
 	v := reflect.ValueOf(*self)

@@ -8,7 +8,7 @@ import (
 
 func TestFeatureList_Transform2MapFeature(t *testing.T) {
 	featureList := NewFeatureList()
-	res := featureList.Transform2MapFeature(featureList)
+	res := featureList.Transform2MapFeature()
 	fmt.Println(res)
 	sortedKeys := make([]int, 0, len(res))
 	for k := range res {

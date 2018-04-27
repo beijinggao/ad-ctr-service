@@ -13,8 +13,9 @@ func main() {
 	var inference xgboost.DMatrix
 
 	booster := core.NewXBooster(modelPath)
+
 	featureList := core.NewFeatureList()
-	res := featureList.Transform2MapFeature(featureList)
+	res := featureList.Transform2MapFeature()
 	fmt.Println(res)
 	sortedKeys := make([]int, 0, len(res))
 	for k := range res {

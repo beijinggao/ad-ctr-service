@@ -2,58 +2,108 @@ package core
 
 import (
 	"reflect"
+	"math"
 )
 
 func NewFeatureListNil() *FeatureList {
 	return &FeatureList{}
 }
 
-// SetAdZoneId
-func (self *FeatureList) SetAdZoneId(value interface{}) {
+// SetAdZoneId 广告位id 实时传递 8号位=8 30号位=2
+func (self *FeatureList) SetAdZoneId(value int) {
 	adZoneId := NewFeature("AdZoneId", OnehotValue, 30, 0, 0, 0, value)
 	self.AdZoneId = *adZoneId
 }
-func (self *FeatureList) SetCTR(value interface{}) {
-	ctr := NewFeature("CTR", ContinueValue, 0, 0, 0, 0, value)
+
+// SetCTR 广告历史CTR 实时传递click view imp数
+func (self *FeatureList) SetCTR(clickNum, viewNum, impNum int) {
+	showNum := 0
+	if self.AdZoneId.Value.(int) == int(APP_FEED) {
+		showNum = viewNum
+	} else {
+		showNum = impNum
+	}
+	smoothParam_alpha := 0.1
+	smoothParam_beta := 10
+	historyCtr := (float64(clickNum) + smoothParam_alpha) / float64(showNum+smoothParam_beta)
+	ctr := NewFeature("CTR", ContinueValue, 0, 0, 0, 0, historyCtr)
 	self.CTR = *ctr
 }
-func (self *FeatureList) SetHasTarget(value interface{}) {
+
+// SetHasTarget 是否定向实时传递 0/1
+func (self *FeatureList) SetHasTarget(value int) {
 	hasTarget := NewFeature("HasTarget", ContinueValue, 0, 0, 0, 0, value)
 	self.HasTarget = *hasTarget
 }
-func (self *FeatureList) SetTerminalFeature(value interface{}) {
+
+// SetTerminalFeature 终端 1:DEFAULT、2:IOS 3:ANDROID、4:MAC_OS_X 5:WINDOWS
+func (self *FeatureList) SetTerminalFeature(value int) {
 	terminalFeature := NewFeature("TerminalFeature", OnehotValue, 5, 0, 0, 0, value)
 	self.TerminalFeature = *terminalFeature
 }
-func (self *FeatureList) SetAvgTopicInterestScore(value interface{}) {
+
+// SetAvgTopicInterestScore 用户话题和广告话题求交，结果的平均分数 参数map key 为topicid,value为权重
+func (self *FeatureList) SetAvgTopicInterestScore(adtopicIds, usertopicids map[int]float64) {
+	sum := 0.0
+	count := 0.0
+	value := 0.0
+	for key := range adtopicIds {
+		if val, ok := usertopicids[key]; ok {
+			sum += val
+			count += 1
+		}
+	}
+	if count != 0.0 {
+		value = sum / count
+	}
+
 	avgTopicInterestScore := NewFeature("AvgTopicInterestScore", ContinueValue, 0, 0, 0, 0, value)
 	self.AvgTopicInterestScore = *avgTopicInterestScore
 }
-func (self *FeatureList) SetMaxTopicInterestScore(value interface{}) {
+
+// SetMaxTopicInterestScore 用户话题和广告话题求交，结果的最大值 参数map key 为topicid,value为权重
+func (self *FeatureList) SetMaxTopicInterestScore(adtopicIds, usertopicids map[int]float64) {
+	value := 0.0
+	for key := range adtopicIds {
+		if val, ok := usertopicids[key]; ok {
+			value = math.Max(value, val)
+		}
+	}
 	maxTopicInterestScore := NewFeature("MaxTopicInterestScore", ContinueValue, 0, 0, 0, 0, value)
 	self.MaxTopicInterestScore = *maxTopicInterestScore
 }
-func (self *FeatureList) SetShowNumFeature(value interface{}) {
+
+// SetShowNumFeature 分广告位用户看过广告的次数（当天数据加周数据）from userActionJedis read  weekUserCrShow
+// zoneJedisPools zoneDayUserCrShow value=zoneDayUserCrShow+weekUserCrShow
+func (self *FeatureList) SetShowNumFeature(value int) {
 	showNumFeature := NewFeature("ShowNumFeature", ContinueValue, 0, 0, 0, 0, value)
 	self.ShowNumFeature = *showNumFeature
 }
-func (self *FeatureList) SetDisplayHours(value interface{}) {
+
+// SetDisplayHours 展现小时 实时获取 0-23
+func (self *FeatureList) SetDisplayHours(value int) {
 	displayHours := NewFeature("DisplayHours", OnehotValue, 24, 0, 0, 0, value)
 	self.DisplayHours = *displayHours
 }
-func (self *FeatureList) SetClickFeature(value interface{}) {
+
+// SetClickFeature 分广告位用户点广告的次数（当天数据加周数据）zoneDayUserCrClick + weekUserCrClick
+func (self *FeatureList) SetClickFeature(value int) {
 	clickFeature := NewFeature("ClickFeature", ContinueValue, 0, 0, 0, 0, value)
 	self.ClickFeature = *clickFeature
 }
-func (self *FeatureList) SetDayUserCrShow(value interface{}) {
+
+// SetDayUserCrShow from zoneJedisPools read zoneDayUserCrShow
+func (self *FeatureList) SetDayUserCrShow(value int) {
 	dayUserCrShow := NewFeature("DayUserCrShow", ContinueValue, 0, 0, 0, 0, value)
 	self.DayUserCrShow = *dayUserCrShow
 }
+
+// SetDayUserCrClick from zoneJedisPools read zoneDayUserCrClick
 func (self *FeatureList) SetDayUserCrClick(value interface{}) {
 	dayUserCrClick := NewFeature("DayUserCrClick", ContinueValue, 0, 0, 0, 0, value)
 	self.DayUserCrClick = *dayUserCrClick
 }
-func (self *FeatureList) SetDayUserShow(value interface{}) {
+func (self *FeatureList) SetDayUserShow(value int) {
 	dayUserShow := NewFeature("DayUserShow", ContinueValue, 0, 0, 0, 0, value)
 	self.DayUserShow = *dayUserShow
 }

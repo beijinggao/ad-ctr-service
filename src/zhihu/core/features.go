@@ -9,6 +9,19 @@ const (
 	OnehotVectorValue
 )
 
+const (
+	_                     AdZoneType = iota
+	WEB_PAGE_TOP
+	WEB_PATE_BOTTOM
+	INNER_WEB_PAGE_TOP
+	INNER_WEB_PAGE_BOTTOM
+	WEB_FEED
+	APP_FEED
+	MOBILE_WEB_BANNER
+)
+
+type AdZoneType int
+
 type FeatureType int
 
 type Feature struct {

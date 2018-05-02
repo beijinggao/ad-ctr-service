@@ -3,6 +3,8 @@ package core
 import (
 	"reflect"
 	"math"
+	"zhihu/utils"
+	"sort"
 )
 
 func NewFeatureListNil() *FeatureList {
@@ -99,124 +101,247 @@ func (self *FeatureList) SetDayUserCrShow(value int) {
 }
 
 // SetDayUserCrClick from zoneJedisPools read zoneDayUserCrClick
-func (self *FeatureList) SetDayUserCrClick(value interface{}) {
+func (self *FeatureList) SetDayUserCrClick(value int) {
 	dayUserCrClick := NewFeature("DayUserCrClick", ContinueValue, 0, 0, 0, 0, value)
 	self.DayUserCrClick = *dayUserCrClick
 }
+
+// SetDayUserShow from allredis read dayUserShowAll
 func (self *FeatureList) SetDayUserShow(value int) {
 	dayUserShow := NewFeature("DayUserShow", ContinueValue, 0, 0, 0, 0, value)
 	self.DayUserShow = *dayUserShow
 }
-func (self *FeatureList) SetDayUserClick(value interface{}) {
+
+// SetDayUserClick from allredis read dayUserClickAll
+func (self *FeatureList) SetDayUserClick(value int) {
 	dayUserClick := NewFeature("DayUserClick", ContinueValue, 0, 0, 0, 0, value)
 	self.DayUserClick = *dayUserClick
 }
-func (self *FeatureList) SetDayUserAdShow(value interface{}) {
+
+// SetDayUserAdShow key = s"ad-effect:ad-uad:${day}:${user.userId}:${adId}" get views
+func (self *FeatureList) SetDayUserAdShow(value int) {
 	dayUserAdShow := NewFeature("DayUserAdShow", ContinueValue, 0, 0, 0, 0, value)
 	self.DayUserAdShow = *dayUserAdShow
 }
-func (self *FeatureList) SetDayUserAdClick(value interface{}) {
+
+// SetDayUserAdClick key = s"ad-effect:ad-uad:${day}:${user.userId}:${adId}" get clicks
+func (self *FeatureList) SetDayUserAdClick(value int) {
 	dayUserAdClick := NewFeature("DayUserAdClick", ContinueValue, 0, 0, 0, 0, value)
 	self.DayUserAdClick = *dayUserAdClick
 }
+
+// SetUserInterests set nil
 func (self *FeatureList) SetUserInterests(value interface{}) {
 	userInterests := NewFeature("UserInterests", OnehotValue, 19, 0, 0, 0, value)
 	self.UserInterests = *userInterests
 }
+
+// SetIndustry set nil
 func (self *FeatureList) SetIndustry(value interface{}) {
 	industry := NewFeature("Industry", OnehotValue, 19, 0, 0, 0, value)
 	self.Industry = *industry
 }
+
+// SetUserIndustrySim set nil
 func (self *FeatureList) SetUserIndustrySim(value interface{}) {
 	userIndustrySim := NewFeature("UserIndustrySim", ContinueValue, 0, 0, 0, 0, value)
 	self.UserIndustrySim = *userIndustrySim
 }
+
+// SetAnsIndustry set nil
 func (self *FeatureList) SetAnsIndustry(value interface{}) {
 	ansIndustry := NewFeature("AnsIndustry", OnehotValue, 19, 0, 0, 0, value)
 	self.UserIndustrySim = *ansIndustry
 }
-func (self *FeatureList) SetUserAdidSim(value interface{}) {
-	userAdidSim := NewFeature("UserAdidSim", ContinueValue, 0, 0, 0, 0, value)
+
+// SetUserAdidSim from ansJedis read advector and uservecotr
+func (self *FeatureList) SetUserAdidSim(adVector, userVecotr []float64) {
+	cosine, err := utils.CosineSimilarity(adVector, userVecotr)
+	if (err != nil) {
+		cosine = 0.0
+	}
+	userAdidSim := NewFeature("UserAdidSim", ContinueValue, 0, 0, 0, 0, cosine)
 	self.UserAdidSim = *userAdidSim
 }
-func (self *FeatureList) SetAnsAdid(value interface{}) {
-	ansAdid := NewFeature("AnsAdid", ContinueValue, 0, 0, 0, 0, value)
+
+// SetAnsAdid from ansJedis read advector and ansVector
+func (self *FeatureList) SetAnsAdid(adVector, ansVector []float64) {
+	cosine, err := utils.CosineSimilarity(adVector, ansVector)
+	if (err != nil) {
+		cosine = 0.0
+	}
+	ansAdid := NewFeature("AnsAdid", ContinueValue, 0, 0, 0, 0, cosine)
 	self.AnsAdid = *ansAdid
 }
-func (self *FeatureList) SetClickIndustry(value interface{}) {
+
+// SetClickIndustry 用户在过去一周不同行业上的点击数量 从ctrJedis读取用户点击日志， 从mysql中读取adId和行业，
+func (self *FeatureList) SetClickIndustry(value int) {
 	clickIndustry := NewFeature("ClickIndustry", ContinueValue, 0, 0, 0, 0, value)
 	self.ClickIndustry = *clickIndustry
 }
-func (self *FeatureList) SetDisplayWeeks(value interface{}) {
+
+// SetDisplayWeeks 实时获取星期几 DAY_OF_WEEK
+func (self *FeatureList) SetDisplayWeeks(value int) {
 	displayWeeks := NewFeature("DisplayWeeks", OnehotValue, 8, 0, 0, 0, value)
 	self.DisplayWeeks = *displayWeeks
 }
-func (self *FeatureList) SetTemplateFeature(value interface{}) {
+
+// SetTemplateFeature 模版id 根据adid从myql中获取
+func (self *FeatureList) SetTemplateFeature(value int) {
 	templateFeature := NewFeature("TemplateFeature", OnehotValue, 100, 0, 0, 0, value)
 	self.TemplateFeature = *templateFeature
 }
+
+//SimsMultiple " 广告（128 * 1 关键词）和用户（128）的相似度
+// 广告（128 * 1 TITLE）和用户（128）的相似度
+// 广告（128 * 1 DESC ）和用户（128）的相似度
+//广告（128 * 1 关键词）和回答（128）的相似度
+//广告（128 * 1 TITLE）和回答（128）的相似度
+//广告（128 * 1 DESC）和回答（128）的相似度
+//广告创意（128 * 1）和用户（128）的相似度
+//广告创意（128 * 1）和回答（128）的相似度
+//from ansJedis read advector
 func (self *FeatureList) SetSimsMultiple(value interface{}) {
 	simsMultiple := NewFeature("SimsMultiple", VectorValue, 0, 8, 0, 0, value)
 	self.SimsMultiple = *simsMultiple
 }
-func (self *FeatureList) SetRecallSim(value interface{}) {
+
+// SetRecallSim 问题和创意的相似度	直接用引擎的数据sim
+func (self *FeatureList) SetRecallSim(value float64) {
 	recallSim := NewFeature("RecallSim", ContinueValue, 0, 0, 0, 0, value)
 	self.RecallSim = *recallSim
 }
-func (self *FeatureList) SetSimIsEmpty(value interface{}) {
+
+// SetSimIsEmpty 从SimsMultiple中扩展特征：广告向量是否为空 回答向量是否为空 用户向量是否为空(0/1) 例：[0,0,1]
+func (self *FeatureList) SetSimIsEmpty(value []float32) {
 	simIsEmpty := NewFeature("SimIsEmpty", VectorValue, 0, 3, 0, 0, value)
 	self.SimIsEmpty = *simIsEmpty
 }
-func (self *FeatureList) SetClusterCtr(value interface{}) {
+
+// SetClusterCtr 从文件中读取("strategy.topicCluster.path") key=maxTopic + "&" + newIndustry.toString
+func (self *FeatureList) SetClusterCtr(value float64) {
 	clusterCtr := NewFeature("ClusterCtr", ContinueValue, 0, 0, 0, 0, value)
 	self.ClusterCtr = *clusterCtr
 }
-func (self *FeatureList) SetUserVectorByAls(value interface{}) {
+
+// SetUserVectorByAls read from userkeywordJedis s"usrvtals:${user}"
+func (self *FeatureList) SetUserVectorByAls(value []float32) {
 	userVectorByAls := NewFeature("UserVectorByAls", VectorValue, 0, 16, 0, 0, value)
 	self.UserVectorByAls = *userVectorByAls
 }
+
+// SetUserVectorIsEmpty UserVectorByAls 扩展特征是否为空（0/1）
 func (self *FeatureList) SetUserVectorIsEmpty(value interface{}) {
 	userVectorIsEmpty := NewFeature("UserVectorIsEmpty", ContinueValue, 0, 0, 0, 0, value)
 	self.UserVectorIsEmpty = *userVectorIsEmpty
 }
-func (self *FeatureList) SetCreativeBrandSim(value interface{}) {
+
+//SetCreativeBrandSim from cidJedis read cidBrandVector key=s"cvtbd:${cid}" 同SetSimsMultiple中uservecotr、ansvector计算相似度
+func (self *FeatureList) SetCreativeBrandSim(cidBrandVector, userVecotr, ansVector []float64) {
+	cid_user_cosine, err := utils.CosineSimilarity(cidBrandVector, userVecotr)
+	if (err != nil) {
+		cid_user_cosine = 0.0
+	}
+	cid_ans_cosine, err := utils.CosineSimilarity(cidBrandVector, ansVector)
+	if (err != nil) {
+		cid_ans_cosine = 0.0
+	}
+
+	cidBrandVectorisEmpty := 0
+	if (len(cidBrandVector) > 0) {
+		cidBrandVectorisEmpty = 1
+	}
+	value := []float32{float32(cid_user_cosine), float32(cid_ans_cosine), float32(cidBrandVectorisEmpty)}
 	creativeBrandSim := NewFeature("CreativeBrandSim", VectorValue, 0, 3, 0, 0, value)
 	self.CreativeBrandSim = *creativeBrandSim
 }
-func (self *FeatureList) SetNegativeKeyWordSim(value interface{}) {
-	negativeKeyWordSim := NewFeature("NegativeKeyWordSim", ContinueValue, 0, 0, 0, 0, value)
+
+// SetNegativeKeyWordSim from userAdkeywordJedis read user negative vector and ad vector
+func (self *FeatureList) SetNegativeKeyWordSim(user_negative_vector, ad_vecotr []float64) {
+	user_negative_cosine, err := utils.CosineSimilarity(ad_vecotr, user_negative_vector)
+	if (err != nil) {
+		user_negative_cosine = 0.0
+	}
+	negativeKeyWordSim := NewFeature("NegativeKeyWordSim", ContinueValue, 0, 0, 0, 0, user_negative_cosine)
 	self.NegativeKeyWordSim = *negativeKeyWordSim
 }
-func (self *FeatureList) SetPostiveKeyWordSim(value interface{}) {
-	postiveKeyWordSim := NewFeature("PostiveKeyWordSim", ContinueValue, 0, 0, 0, 0, value)
+
+// SetPostiveKeyWordSim from userAdkeywordJedis read user postive vector and ad vector
+func (self *FeatureList) SetPostiveKeyWordSim(user_postive_vector, ad_vecotr []float64) {
+	user_postive_cosine, err := utils.CosineSimilarity(ad_vecotr, user_postive_vector)
+	if (err != nil) {
+		user_postive_cosine = 0.0
+	}
+	postiveKeyWordSim := NewFeature("PostiveKeyWordSim", ContinueValue, 0, 0, 0, 0, user_postive_cosine)
 	self.PostiveKeyWordSim = *postiveKeyWordSim
 }
-func (self *FeatureList) SetNegativeUserAdTopicSim(value interface{}) {
-	negativeUserAdTopicSim := NewFeature("NegativeUserAdTopicSim", ContinueValue, 0, 0, 0, 0, value)
+
+// SetNegativeUserAdTopicSim from userAdkeywordJedis read user negative vector and ad vector
+func (self *FeatureList) SetNegativeUserAdTopicSim(adVector, negative_userTopicVector []float64) {
+	negative_userTopic_cosine, err := utils.CosineSimilarity(adVector, negative_userTopicVector)
+	if (err != nil) {
+		negative_userTopic_cosine = 0.0
+	}
+	negativeUserAdTopicSim := NewFeature("NegativeUserAdTopicSim", ContinueValue, 0, 0, 0, 0, negative_userTopic_cosine)
 	self.NegativeUserAdTopicSim = *negativeUserAdTopicSim
 }
-func (self *FeatureList) SetPostiveUserAdTopicSim(value interface{}) {
-	postiveUserAdTopicSim := NewFeature("PostiveUserAdTopicSim", ContinueValue, 0, 0, 0, 0, value)
+func (self *FeatureList) SetPostiveUserAdTopicSim(adVector, postive_userTopicVector []float64) {
+	postive_userTopic_cosine, err := utils.CosineSimilarity(adVector, postive_userTopicVector)
+	if (err != nil) {
+		postive_userTopic_cosine = 0.0
+	}
+	postiveUserAdTopicSim := NewFeature("PostiveUserAdTopicSim", ContinueValue, 0, 0, 0, 0, postive_userTopic_cosine)
 	self.PostiveUserAdTopicSim = *postiveUserAdTopicSim
 }
-func (self *FeatureList) SetBrushnum(value interface{}) {
+
+// SetBrushnum 刷数 实时获取
+func (self *FeatureList) SetBrushnum(value int) {
 	brushnum := NewFeature("Brushnum", ContinueValue, 0, 0, 0, 0, value)
 	self.Brushnum = *brushnum
 }
-func (self *FeatureList) SetCtrPro(value interface{}) {
-	ctrPro := NewFeature("CtrPro", VectorValue, 0, 4, 0, 0, value)
+
+// SetCtrPro from proJedis and proUserJedis and aderUserJedis read views and clicks
+func (self *FeatureList) SetCtrPro(proDayShow, proDayClick, aderDayShow, aderDayClick, proUserDayShow, proUserDayClick, aderUserDayShow, aderUserDayClick int) {
+	ctrarr := []float32{float32(proDayClick / (proDayShow + 1.0)),
+		float32(aderDayClick / (aderDayShow + 1.0)), float32(proUserDayClick / (proUserDayShow + 1.0)), float32(aderUserDayClick / (aderUserDayShow + 1.0))}
+	ctrPro := NewFeature("CtrPro", VectorValue, 0, 4, 0, 0, ctrarr)
 	self.CtrPro = *ctrPro
 }
-func (self *FeatureList) SetViewClickNum(value interface{}) {
+
+// SetViewClickNum proJedis and proUserJedis and aderUserJedis read and clicks
+func (self *FeatureList) SetViewClickNum(proDayClick, aderDayClick, proUserDayClick, aderUserDayClick int) {
+	value := []float32{float32(proDayClick), float32(aderDayClick), float32(proUserDayClick), float32(aderUserDayClick)}
 	viewClickNum := NewFeature("ViewClickNum", VectorValue, 0, 4, 0, 0, value)
 	self.ViewClickNum = *viewClickNum
 }
-func (self *FeatureList) SetPageHomeType(value interface{}) {
-	pageHomeType := NewFeature("PageHomeType", OnehotValue, 8, 0, 0, 0, value)
+
+// SetPageHomeType RECOMMEND =0, FOLLOW =1,DEFAULT = 2
+func (self *FeatureList) SetPageHomeType(value int) {
+	pageHomeType := NewFeature("PageHomeType", OnehotValue, 8, 0, 0, 0, 2)
 	self.PageHomeType = *pageHomeType
 }
-func (self *FeatureList) SetUserAdTagOneHotVector(value interface{}) {
-	userAdTagOneHotVector := NewFeature("UserAdTagOneHotVector", OnehotVectorValue, 0, 0, 0, 69, value)
+
+// SetUserAdTagOneHotVector  from userAdkeywordJedis read user and ad tagid
+func (self *FeatureList) SetUserAdTagOneHotVector(usertag_vecotr, adtag_vecotr []float64) {
+	resArray := []float64{}
+	if (len(usertag_vecotr) > 0 && len(adtag_vecotr) > 0) {
+		if (usertag_vecotr[0] == adtag_vecotr[0]) {
+			resArray = append(resArray, 1)
+		}
+	}
+	if (len(adtag_vecotr) > 0) {
+		for _, element := range adtag_vecotr[1:] {
+			resArray = append(resArray, 1+element)
+		}
+	}
+	if (len(usertag_vecotr) > 0) {
+		for _, element := range usertag_vecotr[1:] {
+			resArray = append(resArray, 35+element)
+		}
+	}
+	sort.Float64s(resArray)
+
+	userAdTagOneHotVector := NewFeature("UserAdTagOneHotVector", OnehotVectorValue, 0, 0, 0, 69, resArray)
 	self.UserAdTagOneHotVector = *userAdTagOneHotVector
 }
 
@@ -447,6 +572,11 @@ func (self *FeatureList) Transform2MapFeature() map[int]float32 {
 			switch feature.Value.(type) {
 			case []float32:
 				for _, val := range feature.Value.([]float32) {
+					sparseFeature[int(val)+currentIndex] = 1.0
+				}
+				currentIndex += feature.OnehotVectorInfo
+			case []float64:
+				for _, val := range feature.Value.([]float64) {
 					sparseFeature[int(val)+currentIndex] = 1.0
 				}
 				currentIndex += feature.OnehotVectorInfo

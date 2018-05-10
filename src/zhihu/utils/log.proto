@@ -1,0 +1,92 @@
+syntax = "proto3";
+package utils;
+
+message Log {
+    string sessionid = 1;
+    int32 isview = 2;
+    int32 isclick = 3;
+    int64 userid = 4;
+    int64 adid = 5;
+    int64 creativeid = 6;
+    int64 companyid = 7;
+    int64 productid = 8;
+
+    //1-30
+    int32 AdZoneId = 9;
+    //31,32
+    float CTR = 10;
+    int32 HasTarget = 11;
+    //33-37
+    int32 TerminalFeature = 12;
+    //38,39
+    float AvgTopicInterestScore = 13;
+    float MaxTopicInterestScore = 14;
+    //40
+    int32 ShowNumFeature = 15;
+    //41-64
+    int32 DisplayHours = 16;
+    //65
+    int32 ClickFeature = 17;
+    //66,67
+    int32 DayUserCrShow = 18;
+    int32 DayUserCrClick = 19;
+    //68,69
+    int32 DayUserShow = 20;
+    int32 DayUserClick = 21;
+    //70,71
+    int32 DayUserAdShow = 22;
+    int32 DayUserAdClick = 23;
+    //72-90
+    int32 UserInterests = 24;
+    //91-109 客户行业
+    int32 Industry = 25;
+    // 110 用户兴趣和客户行业的相似度
+    float UserIndustrySim = 26;
+    //answer 行业向量 111 -129
+    int32 AnsIndustry = 27;
+    // uid - adid 相似度 130
+    float UserAdidSim = 28;
+    // awid - adid 相似度 131
+    float AnsAdid = 29;
+    // clickIndustry 132
+    int32 ClickIndustry = 30;
+
+    // 周特征 133 - 140
+    int32 DisplayWeeks = 31;
+    // 模板特征 141-240
+    int32 TemplateFeature = 32;
+
+    // 241 - 248
+    repeated float SimsMultiple = 33;
+    // 249
+    float RecallSim = 34;
+    // 250-252
+    int32 SimIsEmpty = 35;
+    // 253
+    float ClusterCtr = 36;
+    // 254-269
+    repeated float UserVectorByAls = 37;
+    // 270
+    repeated float UserVectorIsEmpty = 38;
+    // 271-273
+    int32 CreativeBrandSim = 39;
+    //274
+    float NegativeKeyWordSim = 40;
+    //275
+    float PostiveKeyWordSim = 41;
+    //276
+    float NegativeUserAdTopicSim = 42;
+    //277
+    float PostiveUserAdTopicSim = 43;
+    // 278
+    int32 Brushnum = 44;
+    // 279-282 ctr
+    repeated float CtrPro = 45;
+    // 283-286
+    int32 ViewClickNum = 46;
+    // 287-294
+    int32 PageHomeType = 47;
+    // 295-363
+    repeated int32 UserAdTagOneHotVector = 48;
+}
+
